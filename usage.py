@@ -42,7 +42,7 @@ gs.init(theme="light", backend=gs.cpu)
 
 
 # %%
-
+# gs.options.ViewerOptions()
 
 num_env = 2
 sep = True

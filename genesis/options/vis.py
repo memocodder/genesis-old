@@ -41,6 +41,8 @@ class ViewerOptions(Options):
     camera_lookat: tuple = (0.0, 0.0, 0.5)
     camera_up: tuple = (0.0, 0.0, 1.0)
     camera_fov: float = 40
+    registered_keys: Optional[dict] = None
+    
 
 
 class VisOptions(Options):
