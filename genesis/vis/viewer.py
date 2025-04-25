@@ -35,6 +35,8 @@ class Viewer(RBC):
         self._camera_init_lookat = options.camera_lookat
         self._camera_up = options.camera_up
         self._camera_fov = options.camera_fov
+        self.registered_keys = options.registered_keys
+
 
         self.context = context
 
@@ -83,6 +85,7 @@ class Viewer(RBC):
                         "window_title": f"Genesis {gs.__version__}",
                         "refresh_rate": self._refresh_rate,
                     },
+                    registered_keys=self.registered_keys
                 )
                 if not self._run_in_thread:
                     self._pyrender_viewer.start(auto_refresh=False)

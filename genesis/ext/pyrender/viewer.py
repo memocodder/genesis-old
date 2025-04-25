@@ -279,8 +279,24 @@ class Viewer(pyglet.window.Window):
         #     self._render_flags['shadows'] = False
 
         self._registered_keys = {}
+        # if registered_keys is not None:
+        #     self._registered_keys = {ord(k.lower()): registered_keys[k] for k in registered_keys}
+
         if registered_keys is not None:
-            self._registered_keys = {ord(k.lower()): registered_keys[k] for k in registered_keys}
+            # self._registered_keys = {ord(k.lower()): registered_keys[k] for k in registered_keys}
+            for k, v in registered_keys.items(): # Итерируем по ключам и значениям входного словаря
+                if isinstance(k, str):
+                    new_key = ord(k.lower())
+                    self._registered_keys[new_key] = v
+                    print(f"Зарегистрирован строковый ключ '{k}' как {new_key}") # Для отладки
+                elif isinstance(k, int):
+                    new_key = k
+                    self._registered_keys[new_key] = v
+                    print(f"Зарегистрирован целочисленный ключ {k} напрямую") # Для отладки
+                else:
+                    # Опционально: обработка других неожиданных типов ключей
+                    print(f"Предупреждение: Пропущен ключ {k} с неожиданным типом {type(k)}")
+
 
         #######################################################################
         # Save internal settings
@@ -794,11 +810,49 @@ class Viewer(pyglet.window.Window):
             c.xmag = xmag
             c.ymag = ymag
 
+    # def on_key_press(self, symbol, modifiers):
+    #     """Record a key press."""
+    #     # First, check for registered key callbacks
+    #     if symbol in self.registered_keys:
+    #         tup = self.registered_keys[symbol]
+    #         callback = None
+    #         args = []
+    #         kwargs = {}
+    #         if not isinstance(tup, (list, tuple, np.ndarray)):
+    #             callback = tup
+    #         else:
+    #             callback = tup[0]
+    #             if len(tup) == 2:
+    #                 args = tup[1]
+    #             if len(tup) == 3:
+    #                 kwargs = tup[2]
+    #         callback(self, *args, **kwargs)
+    #         return
+
+
+    def on_key_release(self, symbol, modifiers):
+        if symbol in self.registered_keys and 'release' in self.registered_keys[symbol]:
+            tup = self.registered_keys[symbol]['release']
+            callback = None
+            args = []
+            kwargs = {}
+            if not isinstance(tup, (list, tuple, np.ndarray)):
+                callback = tup
+            else:
+                callback = tup[0]
+                if len(tup) == 2:
+                    args = tup[1]
+                if len(tup) == 3:
+                    kwargs = tup[2]
+            callback(self, *args, **kwargs)
+            return
+
+
     def on_key_press(self, symbol, modifiers):
         """Record a key press."""
         # First, check for registered key callbacks
-        if symbol in self.registered_keys:
-            tup = self.registered_keys[symbol]
+        if symbol in self.registered_keys and 'press' in self.registered_keys[symbol]:
+            tup = self.registered_keys[symbol]['press']
             callback = None
             args = []
             kwargs = {}
